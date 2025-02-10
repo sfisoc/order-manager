@@ -1,0 +1,17 @@
+Design choices
+
+Persistence(In Memory) ...Still researching which is best on complexity
+PriorityQueue -
+TreeMap -
+
+
+Endpoints
+
+{pairwise}/order - GET
+{pairwise}/order - Delete
+{pairwise}/tradehistory -GET
+orders/limit - POST
+
+
+
+

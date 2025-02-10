@@ -1,0 +1,11 @@
+Research Links
+
+   https://b2broker.com/library/what-is-a-limit-order-book/
+
+   https://www.coinbase.com/learn/advanced-trading/what-is-an-order-book
+
+   https://www.geeksforgeeks.org/top-server-side-kotlin-framework/
+
+   https://coderanch.com/t/683923/java/PriorityQueue-TreeSet
+
+    https://jordanhasnolife.substack.com/p/case-study-28-bidding-platform

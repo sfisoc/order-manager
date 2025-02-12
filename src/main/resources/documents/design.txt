@@ -12,6 +12,28 @@ Endpoints
 {pairwise}/tradehistory -GET
 orders/limit - POST
 
+Code
+
+Entities/Models/Enums
+Order
+Trade
+LimitOrder
+SideEnum
+TimeInForce
+
+Interfaces
+OrderRepo
+TradeRepo
+
+Service
+OrderBook - Engine for adding trades and matching orders
+
+Controllers/Vertices
+OrderBookController
+
+
+
+
 
 
 

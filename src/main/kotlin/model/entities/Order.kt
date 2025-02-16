@@ -1,14 +1,24 @@
 package org.example.model.entities
 
-import model.enums.Side
+import model.enums.CurrencyPair
+import model.enums.OrderStatus
+import model.enums.OrderSide
+import model.enums.TimeInForce
+import java.math.BigDecimal
+import java.time.LocalDateTime
 
-data class Order (val id: String,
-                 val side: Side,
-                 val quantity: Double,
-                 val price: String,
-                 val currencyPair: String,
-                 val orderCount: Int
-)
+data class Order (
+    var id: String,
+    val side: OrderSide,
+    val quantity: BigDecimal,
+    val price: BigDecimal,
+    val currencyPair: CurrencyPair,
+    val timestamp: LocalDateTime,
+    val timeInForce: TimeInForce = TimeInForce.GTC,
+    val status: OrderStatus = OrderStatus.ACTIVE,
+    val customerOrderId: Int? = null,
+    val orderCount: Int = 0
+    )
 
 
 //     "side": "sell",

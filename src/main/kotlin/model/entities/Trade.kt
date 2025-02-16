@@ -1,16 +1,21 @@
 package org.example.model.entities
 
-import model.enums.Side
+import model.enums.CurrencyPair
+import model.enums.OrderSide
+import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.util.*
 
-data class Trade (val id: String,
-                  val price: String,
-                  val quantity: Double,
-                  val currencyPair: String,
-                  val tradeAt: String,
-                  val takerSide: Side,
-                  val sequenceId: String,
-                  val quoteVolume: String
-)
+data class Trade(
+    val id: String = UUID.randomUUID().toString(),
+    val price: BigDecimal,
+    val quantity: BigDecimal,
+    val currencyPair: CurrencyPair,
+    val takerOrderSide: OrderSide,
+    val takerOrderId: String,
+    val makerOrderId: String,
+    val timestamp: LocalDateTime = LocalDateTime.now(),
+    )
 
 // "price": "43064",
 //    "quantity": "0.00079928",

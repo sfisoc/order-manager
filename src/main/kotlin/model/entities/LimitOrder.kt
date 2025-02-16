@@ -1,16 +1,17 @@
 package org.example.model.entities
 
-import model.enums.Side
-import model.enums.timeInForce
+import model.enums.CurrencyPair
+import model.enums.OrderSide
+import model.enums.TimeInForce
 
 data class LimitOrder (val id: String,
-                       val side: Side,
+                       val orderSide: OrderSide,
                        val quantity: Double,
                        val price: String,
-                       val pair: String,
+                       val pair: CurrencyPair,
                        val postOnly: Boolean,
                        val customerOrderId: Int,
-                       val timeInForce: timeInForce
+                       val timeInForce: TimeInForce
 )
 
 

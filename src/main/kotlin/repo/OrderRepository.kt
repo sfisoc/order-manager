@@ -1,6 +1,6 @@
 package org.example.repo
 
-import model.enums.Side
+import model.enums.OrderSide
 import org.example.model.entities.Order
 import java.math.BigDecimal
 
@@ -13,5 +13,5 @@ interface OrderRepository {
     fun getAllBuys(): List<Order>
     fun getAllSells(): List<Order>
     fun updateOrder(order: Order)
-    fun getOrdersByPrice(side: Side, price: BigDecimal): List<Order>
+    fun getOrdersByPrice(orderSide: OrderSide, price: BigDecimal): List<Order>
 }

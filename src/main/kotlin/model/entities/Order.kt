@@ -6,14 +6,15 @@ import model.enums.OrderSide
 import model.enums.TimeInForce
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.util.*
 
 data class Order (
-    var id: String,
+    val id: String = UUID.randomUUID().toString(),
     val side: OrderSide,
     val quantity: BigDecimal,
     val price: BigDecimal,
     val currencyPair: CurrencyPair,
-    val timestamp: LocalDateTime,
+    val timestamp: LocalDateTime = LocalDateTime.now(),
     val timeInForce: TimeInForce = TimeInForce.GTC,
     val status: OrderStatus = OrderStatus.ACTIVE,
     val customerOrderId: Int? = null,

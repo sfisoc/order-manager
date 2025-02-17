@@ -13,6 +13,6 @@ class ListTradeRepository : TradeRepository {
     }
 
     override fun getRecentTrades(limit: Int): List<Trade> {
-        return trades.takeLast(limit).reversed()
+        return trades.takeLast(limit)
     }
 }

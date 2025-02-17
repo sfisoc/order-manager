@@ -11,7 +11,6 @@ data class Trade(
     val price: BigDecimal,
     val quantity: BigDecimal,
     val currencyPair: CurrencyPair,
-    val takerOrderSide: OrderSide,
     val takerOrderId: String,
     val makerOrderId: String,
     val timestamp: LocalDateTime = LocalDateTime.now(),

@@ -1,4 +1,4 @@
-package org.example.model.responses
+package org.example.model.responses.internal
 
 import org.example.model.entities.Order
 import org.example.model.entities.Trade

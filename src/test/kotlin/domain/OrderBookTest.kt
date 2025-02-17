@@ -235,7 +235,7 @@ class OrderBookTest {
 
   orderBook.submitOrder(order)
 
-  val isCanceled= orderBook.cancelOrder(order)
+  val isCanceled= orderBook.cancelOrder(order.id)
 
   assertTrue(isCanceled)
 

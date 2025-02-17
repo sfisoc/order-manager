@@ -8,7 +8,7 @@ import model.responses.dto.OrderTradesResponse
 import org.example.model.entities.Order
 import org.example.model.entities.Trade
 import org.example.model.responses.api.OrderBookEntry
-import org.example.model.responses.api.OrderBookResponse
+import model.responses.dto.OrderBookResponse
 import org.example.model.responses.internal.OrderMatchResult
 import org.example.model.responses.internal.OrderResult
 import org.example.repo.OrderRepository
@@ -29,8 +29,8 @@ class OrderBook(private val orderBookCurrencyPair: CurrencyPair,
         }
     }
 
-    fun cancelOrder(order: Order): Boolean {
-        val removeOrder = orderRepository.removeOrder(order.id)
+    fun cancelOrder(orderId: String): Boolean {
+        val removeOrder = orderRepository.removeOrder(orderId)
 
         return null != removeOrder
     }

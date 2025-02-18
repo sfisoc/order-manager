@@ -1,18 +1,22 @@
 package org.example.controllers
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpServerOptions
 import io.vertx.core.json.Json
+import io.vertx.core.json.jackson.DatabindCodec
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
+import io.vertx.ext.web.handler.BodyHandler
 import io.vertx.kotlin.core.json.get
 import model.enums.CurrencyPair
 import model.enums.OrderSide
 import model.enums.TimeInForce
 import org.example.model.entities.Order
 import org.example.model.responses.dto.ErrorResponse
-
 import org.example.services.OrderProcessorService
 
 private const val CONTENT_TYPE = "content-type"
@@ -24,22 +28,37 @@ class OrderBookVerticle : AbstractVerticle() {
     private val orderService = OrderProcessorService()
     private val router = Router.router(Vertx.vertx())
 
+    init {
+
+        router.route().handler(BodyHandler.create());
+
+        val objectMapper = DatabindCodec.mapper()
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        objectMapper.disable(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+        objectMapper.disable(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)
+
+        val module = JavaTimeModule()
+        objectMapper.registerModule(module)
+    }
+
     override fun start() {
 
         setupRoutes()
 
         vertx.createHttpServer(
             HttpServerOptions().
-            setPort(8080).
+            setPort(8890).
             setHost("localhost")
         ).requestHandler(router)
         .listen()
-        print("Server started on 8080")
+        print("Server started on 8890")
     }
 
     private fun setupRoutes() {
 
-        router.post("/v1/:currencyPair/orderbook")
+        router.post("/v1/:currencyPair/orderbook/limit")
+            .consumes(APPLICATION_JSON)
             .handler(this::createOrder);
 
         router.post("/v1/:currencyPair/orderbook/cancel")
@@ -49,10 +68,7 @@ class OrderBookVerticle : AbstractVerticle() {
             .handler(this::getOrderBook);
 
         router.get("/v1/:currencyPair/tradehistory/:limit")
-            .handler(this::getOrderBook);
-
-        vertx.createHttpServer().requestHandler(router).listen(8080)
-
+            .handler(this::getOrderBookTradeHistory);
     }
 
     private fun createOrder(routingContext: RoutingContext) {
@@ -63,7 +79,6 @@ class OrderBookVerticle : AbstractVerticle() {
         val pair = CurrencyPair.valueOf(currencyPair)
 
         val jsonObject = routingContext.body().asJsonObject()
-
 
         val getSide = jsonObject.get<String>("side")
         val getPrice = jsonObject.get<String>("price")
@@ -90,11 +105,14 @@ class OrderBookVerticle : AbstractVerticle() {
                     .end(Json.encodePrettily(orderResult.order))
 
         }
+        else
+        {
+            routingContext.response()
+                .putHeader(CONTENT_TYPE, APPLICATION_JSON)
+                .setStatusCode(400)
+                .end(Json.encodePrettily(ErrorResponse(order.id," Failed to process Order")))
 
-        routingContext.response()
-            .putHeader(CONTENT_TYPE, APPLICATION_JSON)
-            .setStatusCode(400)
-            .end(Json.encodePrettily(ErrorResponse(order.id," Failed to process Order")))
+        }
 
     }
 

@@ -11,13 +11,13 @@ import io.vertx.core.json.jackson.DatabindCodec
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.handler.BodyHandler
-import io.vertx.kotlin.core.json.get
 import model.enums.CurrencyPair
 import model.enums.OrderSide
 import model.enums.TimeInForce
 import org.example.model.entities.Order
 import org.example.model.responses.dto.ErrorResponse
 import org.example.services.OrderProcessorService
+import org.example.utils.Validator
 
 private const val CONTENT_TYPE = "content-type"
 
@@ -30,7 +30,7 @@ class OrderBookVerticle : AbstractVerticle() {
 
     init {
 
-        router.route().handler(BodyHandler.create());
+        router.route().handler(BodyHandler.create().setBodyLimit(100));
 
         val objectMapper = DatabindCodec.mapper()
 
@@ -59,19 +59,33 @@ class OrderBookVerticle : AbstractVerticle() {
 
         router.post("/v1/:currencyPair/orderbook/limit")
             .consumes(APPLICATION_JSON)
+            .handler(Validator.currencyPairValidator(vertx).build() )
+            .handler(Validator.orderPayloadValidator(vertx).build() )
             .handler(this::createOrder);
 
         router.post("/v1/:currencyPair/orderbook/cancel")
+            .consumes(APPLICATION_JSON)
+            .handler(Validator.currencyPairValidator(vertx).build() )
+            .handler(Validator.orderCancelPayloadValidator(vertx).build() )
             .handler(this::cancelOrder);
 
         router.get("/v1/:currencyPair/orderbook")
+            .produces(APPLICATION_JSON)
+            .handler(Validator.currencyPairValidator(vertx).build() )
             .handler(this::getOrderBook);
 
         router.get("/v1/:currencyPair/tradehistory/:limit")
+            .produces(APPLICATION_JSON)
+            .handler(Validator.currencyPairValidator(vertx).build() )
             .handler(this::getOrderBookTradeHistory);
     }
 
-    private fun createOrder(routingContext: RoutingContext) {
+
+
+        private fun createOrder(routingContext: RoutingContext) {
+
+        val isHeaderValid = Validator.isValidateHeader(APPLICATION_JSON,routingContext.request().getHeader(CONTENT_TYPE))
+
 
         val currencyPair: String = routingContext.request()
             .getParam("currencyPair")
@@ -80,11 +94,11 @@ class OrderBookVerticle : AbstractVerticle() {
 
         val jsonObject = routingContext.body().asJsonObject()
 
-        val getSide = jsonObject.get<String>("side")
-        val getPrice = jsonObject.get<String>("price")
-        val getQuantity = jsonObject.get<String>("quantity")
+        val getSide = jsonObject.getString("side")
+        val getPrice = jsonObject.getString("price")
+        val getQuantity = jsonObject.getString("quantity")
 
-        val getTimeInForce = jsonObject.get<String>("timeInForce")
+        val getTimeInForce = jsonObject.getString("timeInForce")
 
         val order = Order(
             side = OrderSide.valueOf(getSide),
@@ -125,8 +139,7 @@ class OrderBookVerticle : AbstractVerticle() {
 
         val jsonObject = routingContext.body().asJsonObject()
 
-
-        val getOrderId = jsonObject.get<String>("orderId")
+        val getOrderId = jsonObject.getString("orderId")
 
         if(getOrderId.isNotEmpty())
         {

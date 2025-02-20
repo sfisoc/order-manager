@@ -11,6 +11,10 @@ import io.vertx.core.json.jackson.DatabindCodec
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.handler.BodyHandler
+import io.vertx.ext.web.validation.BadRequestException
+import io.vertx.ext.web.validation.BodyProcessorException
+import io.vertx.ext.web.validation.ParameterProcessorException
+import io.vertx.ext.web.validation.RequestPredicateException
 import model.enums.CurrencyPair
 import model.enums.OrderSide
 import model.enums.TimeInForce
@@ -18,6 +22,7 @@ import org.example.model.entities.Order
 import org.example.model.responses.dto.ErrorResponse
 import org.example.services.OrderProcessorService
 import org.example.utils.Validator
+
 
 private const val CONTENT_TYPE = "content-type"
 
@@ -31,6 +36,8 @@ class OrderBookVerticle : AbstractVerticle() {
     init {
 
         router.route().handler(BodyHandler.create().setBodyLimit(100));
+
+        manageFailure(router)
 
         val objectMapper = DatabindCodec.mapper()
 
@@ -80,6 +87,37 @@ class OrderBookVerticle : AbstractVerticle() {
             .handler(this::getOrderBookTradeHistory);
     }
 
+    private fun manageFailure(router: Router) {
+        router.errorHandler(
+            400
+        ) { routingContext: RoutingContext ->
+            if (routingContext.failure() is BadRequestException) {
+                if (routingContext.failure() is ParameterProcessorException) {
+                    // Something went wrong while parsing/validating a
+                    routingContext.response()
+                        .putHeader(CONTENT_TYPE, APPLICATION_JSON)
+                        .setStatusCode(400)
+                        .end(Json.encodePrettily(ErrorResponse(message = "Malformed paramter")))
+
+                } else if (routingContext.failure() is BodyProcessorException) {
+                    // Something went wrong while parsing/validating the body
+
+                    routingContext.response()
+                        .putHeader(CONTENT_TYPE, APPLICATION_JSON)
+                        .setStatusCode(400)
+                        .end(Json.encodePrettily(ErrorResponse(message = "Invalid Body")))
+
+                } else if (routingContext.failure() is RequestPredicateException) {
+                    // A request predicate is unsatisfied
+
+                    routingContext.response()
+                        .putHeader(CONTENT_TYPE, APPLICATION_JSON)
+                        .setStatusCode(400)
+                        .end(Json.encodePrettily(ErrorResponse(message = "Body required")))
+                }
+            }
+        }
+    }
 
 
         private fun createOrder(routingContext: RoutingContext) {

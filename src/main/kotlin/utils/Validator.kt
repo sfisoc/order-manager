@@ -9,10 +9,15 @@ import io.vertx.ext.web.validation.builder.ValidationHandlerBuilder
 import io.vertx.json.schema.SchemaParser
 import io.vertx.json.schema.SchemaRouter
 import io.vertx.json.schema.SchemaRouterOptions
+import io.vertx.json.schema.common.dsl.Keywords.*
 import model.enums.CurrencyPair
 import model.enums.OrderSide
 import model.enums.TimeInForce
 import io.vertx.json.schema.common.dsl.Schemas.*
+import io.vertx.json.schema.draft7.dsl.Keywords.maximum
+import io.vertx.json.schema.draft7.dsl.Keywords.minimum
+import java.math.BigDecimal
+import java.util.regex.Pattern
 
 
 class  Validator {
@@ -54,18 +59,22 @@ class  Validator {
         }
 
         fun currencyPairValidator(vertx : Vertx): ValidationHandlerBuilder {
+
+            val currencyPairSchema = arraySchema()
+                .items(enumSchema(*CurrencyPair.values().map { it.name }.toTypedArray())) // Use arraySchema with enumSchema
+
             return ValidationHandlerBuilder
                 .create(initSchemaParser(vertx))
-                .pathParameter(Parameters.param("currencyPair", intSchema()))
+                .pathParameter(Parameters.param("currencyPair",currencyPairSchema))
         }
 
         fun orderPayloadValidator(vertx : Vertx): ValidationHandlerBuilder {
 
             val bodySchemaBuilder = objectSchema()
-                .requiredProperty("side", stringSchema()) //todo add valid enums to props
-                .requiredProperty("price", stringSchema())
-                .requiredProperty("quantity", stringSchema())
-                .optionalProperty("timeInForce", stringSchema())
+                .requiredProperty("side", enumSchema(OrderSide.SELL.name,OrderSide.BUY.name))
+                .requiredProperty("price", stringSchema().with(pattern(Pattern.compile("^(0|[1-9]\\d*)(\\.\\d+)?$"))))
+                .requiredProperty("quantity", stringSchema().with(pattern(Pattern.compile("^(0|[1-9]\\d*)(\\.\\d+)?$"))))
+                .optionalProperty("timeInForce", enumSchema(TimeInForce.IOC.name,TimeInForce.GTC.name,TimeInForce.FOK.name))
 
             return ValidationHandlerBuilder
                 .create(initSchemaParser(vertx))
@@ -77,7 +86,7 @@ class  Validator {
         fun orderCancelPayloadValidator(vertx : Vertx): ValidationHandlerBuilder {
 
             val bodySchemaBuilder = objectSchema()
-                .requiredProperty("orderId", stringSchema())
+                .requiredProperty("orderId", stringSchema().with(minLength(36)).with(maxLength(36)))
 
             return ValidationHandlerBuilder
                 .create(initSchemaParser(vertx))

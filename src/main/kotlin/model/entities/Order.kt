@@ -20,10 +20,3 @@ data class Order (
     val customerOrderId: Int? = null,
     val orderCount: Int = 0
     )
-
-
-//     "side": "sell",
-//            "quantity": "0.00006",
-//            "price": "1852331",
-//            "currencyPair": "BTCZAR",
-//            "orderCount": 1

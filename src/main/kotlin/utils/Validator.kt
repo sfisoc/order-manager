@@ -31,7 +31,7 @@ class  Validator {
         fun currencyPairValidator(vertx : Vertx): ValidationHandlerBuilder {
 
             val currencyPairSchema = arraySchema()
-                .items(enumSchema(*CurrencyPair.values().map { it.name }.toTypedArray()))
+                .items(enumSchema(*CurrencyPair.entries.map { it.name }.toTypedArray()))
 
             return ValidationHandlerBuilder
                 .create(initSchemaParser(vertx))

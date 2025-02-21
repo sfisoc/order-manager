@@ -7,7 +7,7 @@ import model.enums.TimeInForce
 import model.responses.dto.OrderTradesResponse
 import org.example.model.entities.Order
 import org.example.model.entities.Trade
-import model.responses.dto.OrderBookEntry
+import org.example.model.responses.internal.OrderBookEntry
 import model.responses.dto.OrderBookResponse
 import org.example.model.responses.internal.OrderMatchResult
 import org.example.model.responses.internal.OrderResult

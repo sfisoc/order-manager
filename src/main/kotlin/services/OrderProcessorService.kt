@@ -45,7 +45,7 @@ class OrderProcessorService {
         }
         else
         {
-            //todo dynamically create to when other repo implementation exist
+            //todo dynamically create when other repo implementation exist
             val orderBook = OrderBook(currencyPair, TreeMapOrderRepository(),ListTradeRepository())
 
             orderBookMap[currencyPair] = orderBook

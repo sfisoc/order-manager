@@ -8,4 +8,4 @@ Research Links
 
    https://coderanch.com/t/683923/java/PriorityQueue-TreeSet
 
-    https://jordanhasnolife.substack.com/p/case-study-28-bidding-platform
+   https://jordanhasnolife.substack.com/p/case-study-28-bidding-platform

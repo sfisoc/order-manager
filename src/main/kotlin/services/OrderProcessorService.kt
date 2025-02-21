@@ -23,7 +23,6 @@ class OrderProcessorService {
         val orderBook = getOrCreateOrderBook(currencyPair)
 
         return orderBook?.getOrderBook() ?:  OrderBookResponse()
-
     }
 
     fun getOrderBookTrades(currencyPair: CurrencyPair, limit : Int = 5): List<OrderTradesResponse> {

@@ -1,4 +1,4 @@
-package org.example.model.responses.api
+package model.responses.dto
 
 import model.enums.CurrencyPair
 import model.enums.OrderSide

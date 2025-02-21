@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "378928de-d1f3-4875-abf3-c67f628d6a62",
+		"name": "order-manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2979750"
+	},
+	"item": [
+		{
+			"name": "getOrderBook BTCZAR",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}:{{port}}/v1/BTCZAR/orderbook",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"v1",
+						"BTCZAR",
+						"orderbook"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getOrderBook ETHZAR",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}:{{port}}/v1/ETHZAR/orderbook",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"v1",
+						"ETHZAR",
+						"orderbook"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "submitLimitOrder BTCZAR",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"side\": \"SELL\",\r\n    \"price\": \"5000\",\r\n    \"quantity\": \"234\",\r\n    \"timeInForce\": \"GTC\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domain}}:{{port}}/v1/BTCZAR/orderbook/limit",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"v1",
+						"BTCZAR",
+						"orderbook",
+						"limit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "submitLimitOrder ETHZAR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"side\": \"BUY\",\r\n    \"price\": \"5000\",\r\n    \"quantity\": \"234\",\r\n    \"timeInForce\": \"GTC\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domain}}:{{port}}/v1/ETHZAR/orderbook/limit",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"v1",
+						"ETHZAR",
+						"orderbook",
+						"limit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancelLimitOrder BTCZAR",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": \"d99f1e1a-441b-4fd0-9f9e-3b68886eb894s\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domain}}:{{port}}/v1/BTCZAR/orderbook/cancel",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"v1",
+						"BTCZAR",
+						"orderbook",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancelLimitOrder ETHZAR",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": \"d99f1e1a-441b-4fd0-9f9e-3b68886eb894s\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domain}}:{{port}}/v1/ETHZAR/orderbook/cancel",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"v1",
+						"ETHZAR",
+						"orderbook",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getTrades BTCZAR",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}:{{port}}/v1/BTCZAR/tradehistory/10",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"v1",
+						"BTCZAR",
+						"tradehistory",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getTrades ETHZAR",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}:{{port}}/v1/ETHZAR/tradehistory/10",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"v1",
+						"ETHZAR",
+						"tradehistory",
+						"10"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "port",
+			"value": "8890",
+			"type": "string"
+		},
+		{
+			"key": "domain",
+			"value": "localhost",
+			"type": "string"
+		}
+	]
+}

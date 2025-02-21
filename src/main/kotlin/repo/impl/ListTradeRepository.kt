@@ -7,7 +7,6 @@ class ListTradeRepository : TradeRepository {
 
     private val trades = mutableListOf<Trade>()
 
-
     override fun addTrade(trade: Trade) {
         trades.add(trade)
     }

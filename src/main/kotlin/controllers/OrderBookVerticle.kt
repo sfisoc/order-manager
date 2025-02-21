@@ -15,25 +15,25 @@ import io.vertx.ext.web.validation.BadRequestException
 import io.vertx.ext.web.validation.BodyProcessorException
 import io.vertx.ext.web.validation.ParameterProcessorException
 import io.vertx.ext.web.validation.RequestPredicateException
+import lombok.extern.slf4j.Slf4j
 import model.enums.CurrencyPair
 import model.enums.OrderSide
 import model.enums.TimeInForce
+import org.example.constants.Constants.Companion.APPLICATION_JSON
+import org.example.constants.Constants.Companion.CONTENT_TYPE
 import org.example.model.entities.Order
 import org.example.model.responses.dto.ErrorResponse
 import org.example.services.OrderProcessorService
 import org.example.utils.Validator
 
-
-private const val CONTENT_TYPE = "content-type"
-
-private const val APPLICATION_JSON = "application/json"
-
+@Slf4j
 class OrderBookVerticle : AbstractVerticle() {
 
     private val orderService = OrderProcessorService()
     private val router = Router.router(Vertx.vertx())
 
     init {
+
 
         router.route().handler(BodyHandler.create().setBodyLimit(100));
 
@@ -59,6 +59,7 @@ class OrderBookVerticle : AbstractVerticle() {
             setHost("localhost")
         ).requestHandler(router)
         .listen()
+
         print("Server started on 8890")
     }
 
@@ -70,7 +71,7 @@ class OrderBookVerticle : AbstractVerticle() {
             .handler(Validator.orderPayloadValidator(vertx).build() )
             .handler(this::createOrder);
 
-        router.post("/v1/:currencyPair/orderbook/cancel")
+        router.delete("/v1/:currencyPair/orderbook/cancel")
             .consumes(APPLICATION_JSON)
             .handler(Validator.currencyPairValidator(vertx).build() )
             .handler(Validator.orderCancelPayloadValidator(vertx).build() )
@@ -93,14 +94,13 @@ class OrderBookVerticle : AbstractVerticle() {
         ) { routingContext: RoutingContext ->
             if (routingContext.failure() is BadRequestException) {
                 if (routingContext.failure() is ParameterProcessorException) {
-                    // Something went wrong while parsing/validating a
+
                     routingContext.response()
                         .putHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .setStatusCode(400)
                         .end(Json.encodePrettily(ErrorResponse(message = "Malformed paramter")))
 
                 } else if (routingContext.failure() is BodyProcessorException) {
-                    // Something went wrong while parsing/validating the body
 
                     routingContext.response()
                         .putHeader(CONTENT_TYPE, APPLICATION_JSON)
@@ -108,7 +108,6 @@ class OrderBookVerticle : AbstractVerticle() {
                         .end(Json.encodePrettily(ErrorResponse(message = "Invalid Body")))
 
                 } else if (routingContext.failure() is RequestPredicateException) {
-                    // A request predicate is unsatisfied
 
                     routingContext.response()
                         .putHeader(CONTENT_TYPE, APPLICATION_JSON)
@@ -121,9 +120,6 @@ class OrderBookVerticle : AbstractVerticle() {
 
 
         private fun createOrder(routingContext: RoutingContext) {
-
-        val isHeaderValid = Validator.isValidateHeader(APPLICATION_JSON,routingContext.request().getHeader(CONTENT_TYPE))
-
 
         val currencyPair: String = routingContext.request()
             .getParam("currencyPair")
@@ -165,7 +161,6 @@ class OrderBookVerticle : AbstractVerticle() {
                 .end(Json.encodePrettily(ErrorResponse(order.id," Failed to process Order")))
 
         }
-
     }
 
     private fun cancelOrder(routingContext: RoutingContext) {
@@ -179,8 +174,7 @@ class OrderBookVerticle : AbstractVerticle() {
 
         val getOrderId = jsonObject.getString("orderId")
 
-        if(getOrderId.isNotEmpty())
-        {
+
             val deleteOrder = orderService.deleteOrder(pair, getOrderId)
 
             if(deleteOrder)
@@ -198,14 +192,6 @@ class OrderBookVerticle : AbstractVerticle() {
                     .end()
             }
         }
-        else
-        {
-            routingContext.response()
-                .putHeader(CONTENT_TYPE, APPLICATION_JSON)
-                .setStatusCode(400)
-                .end()
-        }
-    }
 
     private fun getOrderBook(routingContext: RoutingContext) {
 
@@ -232,7 +218,7 @@ class OrderBookVerticle : AbstractVerticle() {
         val limit: String = routingContext.request()
             .getParam("limit")
 
-        var limitNum: Int  = 5
+        var limitNum  = 5
 
         if(limit.isNotEmpty())
         {
@@ -246,7 +232,4 @@ class OrderBookVerticle : AbstractVerticle() {
             .setStatusCode(200)
             .end(Json.encodePrettily(tradesResponse))
     }
-
-
-
 }
